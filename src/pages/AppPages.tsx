@@ -8,15 +8,17 @@ import ReportsPage from "./app/ReportsPage";
 import AlertsPage from "./app/AlertsPage";
 import RegisterPage from "./app/RegisterPage";
 import SettingsPage from "./app/SettingsPage";
+import QRPage from "./app/QRPage";
 
 const pageTitle: Record<string, string> = {
   dashboard: "Dashboard",
-  track: "Track Gem",
-  register: "Register Gem",
-  compare: "Compare Gems",
-  alerts: "Fraud Alerts",
-  reports: "Reports",
-  settings: "Settings",
+  track:     "Track Gem",
+  register:  "Register Gem",
+  compare:   "Compare Gems",
+  alerts:    "Fraud Alerts",
+  reports:   "Reports",
+  qr:        "QR Codes",
+  settings:  "Settings",
 };
 
 const AppPages: React.FC<AppLayoutProps> = ({ subPage, setSubPage }) => (
@@ -25,12 +27,13 @@ const AppPages: React.FC<AppLayoutProps> = ({ subPage, setSubPage }) => (
     <div className="ml-60 flex-1 min-h-screen bg-background">
       <TopBar title={pageTitle[subPage] || "Dashboard"} />
       {subPage === "dashboard" && <DashboardPage />}
-      {subPage === "track" && <TrackPage />}
-      {subPage === "compare" && <ComparePage />}
-      {subPage === "reports" && <ReportsPage />}
-      {subPage === "alerts" && <AlertsPage />}
-      {subPage === "register" && <RegisterPage />}
-      {subPage === "settings" && <SettingsPage />}
+      {subPage === "track"     && <TrackPage />}
+      {subPage === "compare"   && <ComparePage />}
+      {subPage === "reports"   && <ReportsPage />}
+      {subPage === "alerts"    && <AlertsPage />}
+      {subPage === "register"  && <RegisterPage />}
+      {subPage === "qr"        && <QRPage />}
+      {subPage === "settings"  && <SettingsPage />}
     </div>
   </div>
 );

@@ -59,8 +59,10 @@ const RegisterPage = () => {
     weight: '',
     color: '',
     clarity: '',
+    price: '',
     location: '',
     district: '',
+    village: '',
     gpsLat: '',
     gpsLng: '',
     minerName: '',
@@ -92,6 +94,10 @@ const RegisterPage = () => {
         setValidationError('A valid weight in carats is required.');
         return false;
       }
+      if (!form.price.trim() || isNaN(Number(form.price)) || Number(form.price) <= 0) {
+        setValidationError('A valid initial price in rupees is required.');
+        return false;
+      }
     }
 
     if (step === 1) {
@@ -111,7 +117,7 @@ const RegisterPage = () => {
         return false;
       }
       if (!form.minerId.trim()) {
-        setValidationError('Miner ID is required.');
+        setValidationError('Miner NIC Number is required.');
         return false;
       }
       if (!form.minerContact.trim()) {
@@ -141,23 +147,18 @@ const RegisterPage = () => {
     setError('');
 
     try {
-      // Parse location into originMine and village
-      const locationParts = form.location.split(',');
-      const originMine = locationParts[0]?.trim() || form.location;
-      const village = locationParts[1]?.trim() || '';
-
       const res = await registerGem({
-        gemType: form.type.trim(),
+        gemType:          form.type.trim(),
         colorDescription: `${form.color} — ${form.clarity}`.trim(),
-        originMine: originMine,
-        district: form.district.trim(),
-        village: village,
-        minerName: form.minerName.trim(),
-        minerIdNumber: form.minerId.trim(),
-        minerContact: form.minerContact.trim(),
-        weightInCarats: Number(form.weight),
-        priceInRupees: 10000, // Default starting price — can be updated via stage
-        miningDate: form.date.trim(),
+        originMine:       form.location.trim(),
+        district:         form.district.trim(),
+        village:          form.village.trim(),
+        minerName:        form.minerName.trim(),
+        minerIdNumber:    form.minerId.trim(),
+        minerContact:     form.minerContact.trim(),
+        weightInCarats:   Number(form.weight),
+        priceInRupees:    Number(form.price),
+        miningDate:       form.date.trim(),
       });
 
       if (res.success && res.data) {
@@ -169,7 +170,7 @@ const RegisterPage = () => {
       }
     } catch (err) {
       console.error('Registration error:', err);
-      setError('Could not connect to the server. Make sure the API is running.');
+      setError('Could not connect to the server. Make sure the API is running on port 4567.');
     } finally {
       setSubmitting(false);
     }
@@ -187,8 +188,10 @@ const RegisterPage = () => {
       weight: '',
       color: '',
       clarity: '',
+      price: '',
       location: '',
       district: '',
+      village: '',
       gpsLat: '',
       gpsLng: '',
       minerName: '',
@@ -229,9 +232,9 @@ const RegisterPage = () => {
           </div>
         </div>
         <p className="font-inter" style={{ fontSize: 12, color: '#888888', marginTop: 12 }}>
-          Save this Gem ID to track your gem or add stages later.
+          Save this Gem ID. Use Track Gem to add Cutting, Trading, Exporting and Buying stages.
         </p>
-        <div style={{ marginTop: 24 }}>
+        <div style={{ marginTop: 24, display: 'flex', gap: 12, justifyContent: 'center' }}>
           <motion.button
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
@@ -266,29 +269,112 @@ const RegisterPage = () => {
             exit={{ x: -60, opacity: 0 }}
             transition={{ duration: 0.3 }}
           >
+            {/* Step 1 — Gem Details */}
             {step === 0 && (
               <div>
-                <FormInput label="Gem Type *" placeholder="e.g. Blue Sapphire" value={form.type} onChange={v => update('type', v)} />
-                <FormInput label="Weight (carats) *" placeholder="e.g. 4.8" value={form.weight} onChange={v => update('weight', v)} />
-                <FormInput label="Color" placeholder="e.g. Royal Blue" value={form.color} onChange={v => update('color', v)} />
-                <FormInput label="Clarity" placeholder="e.g. Eye Clean" value={form.clarity} onChange={v => update('clarity', v)} />
+                <FormInput
+                  label="Gem Type *"
+                  placeholder="e.g. Blue Sapphire"
+                  value={form.type}
+                  onChange={v => update('type', v)}
+                />
+                <FormInput
+                  label="Weight (carats) *"
+                  placeholder="e.g. 4.8"
+                  value={form.weight}
+                  onChange={v => update('weight', v)}
+                />
+                <FormInput
+                  label="Initial Mining Price (Rs.) *"
+                  placeholder="e.g. 50000"
+                  value={form.price}
+                  onChange={v => update('price', v)}
+                />
+                <FormInput
+                  label="Color"
+                  placeholder="e.g. Royal Blue"
+                  value={form.color}
+                  onChange={v => update('color', v)}
+                />
+                <FormInput
+                  label="Clarity"
+                  placeholder="e.g. Eye Clean"
+                  value={form.clarity}
+                  onChange={v => update('clarity', v)}
+                />
               </div>
             )}
+
+            {/* Step 2 — Mining Location */}
             {step === 1 && (
               <div>
-                <FormInput label="Mining Location *" placeholder="e.g. Pelmadulla Mine, Ratnapura" value={form.location} onChange={v => update('location', v)} />
-                <FormInput label="District *" placeholder="e.g. Ratnapura" value={form.district} onChange={v => update('district', v)} />
-                <FormInput label="GPS Latitude" placeholder="e.g. 6.6828" value={form.gpsLat} onChange={v => update('gpsLat', v)} />
-                <FormInput label="GPS Longitude" placeholder="e.g. 80.3992" value={form.gpsLng} onChange={v => update('gpsLng', v)} />
+                <FormInput
+                  label="Mine Name / Origin *"
+                  placeholder="e.g. Pelmadulla Mine"
+                  value={form.location}
+                  onChange={v => update('location', v)}
+                />
+                <FormInput
+                  label="District *"
+                  placeholder="e.g. Ratnapura"
+                  value={form.district}
+                  onChange={v => update('district', v)}
+                />
+                <FormInput
+                  label="Village"
+                  placeholder="e.g. Pelmadulla"
+                  value={form.village}
+                  onChange={v => update('village', v)}
+                />
+                <FormInput
+                  label="GPS Latitude"
+                  placeholder="e.g. 6.6828"
+                  value={form.gpsLat}
+                  onChange={v => update('gpsLat', v)}
+                />
+                <FormInput
+                  label="GPS Longitude"
+                  placeholder="e.g. 80.3992"
+                  value={form.gpsLng}
+                  onChange={v => update('gpsLng', v)}
+                />
               </div>
             )}
+
+            {/* Step 3 — Miner Details */}
             {step === 2 && (
               <div>
-                <FormInput label="Miner Name *" placeholder="e.g. Sumith Perera" value={form.minerName} onChange={v => update('minerName', v)} />
-                <FormInput label="Miner NIC Number *" placeholder="e.g. 199012345678" value={form.minerId} onChange={v => update('minerId', v)} />
-                <FormInput label="Miner Contact *" placeholder="e.g. 0771234567" value={form.minerContact} onChange={v => update('minerContact', v)} />
-                <FormInput label="Mining Date *" placeholder="2025-01-15" value={form.date} onChange={v => update('date', v)} type="date" />
-                <FormInput label="Notes" placeholder="Additional notes..." value={form.notes} onChange={v => update('notes', v)} />
+                <FormInput
+                  label="Miner Full Name *"
+                  placeholder="e.g. Sumith Perera"
+                  value={form.minerName}
+                  onChange={v => update('minerName', v)}
+                />
+                <FormInput
+                  label="Miner NIC Number *"
+                  placeholder="e.g. 199012345678"
+                  value={form.minerId}
+                  onChange={v => update('minerId', v)}
+                />
+                <FormInput
+                  label="Miner Contact Number *"
+                  placeholder="e.g. 0771234567"
+                  value={form.minerContact}
+                  onChange={v => update('minerContact', v)}
+                />
+                <FormInput
+                  label="Mining Date *"
+                  placeholder="2025-01-15"
+                  value={form.date}
+                  onChange={v => update('date', v)}
+                  type="date"
+                />
+                <FormInput
+                  label="Notes"
+                  placeholder="Any additional information about this gem..."
+                  value={form.notes}
+                  onChange={v => update('notes', v)}
+                />
               </div>
             )}
           </motion.div>
@@ -308,12 +394,17 @@ const RegisterPage = () => {
           </p>
         )}
 
+        {/* Navigation buttons */}
         <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 32 }}>
           {step > 0 ? (
             <motion.button
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              onClick={() => { setStep(s => s - 1); setValidationError(''); setError(''); }}
+              onClick={() => {
+                setStep(s => s - 1);
+                setValidationError('');
+                setError('');
+              }}
               className="font-inter"
               style={{
                 display: 'flex', alignItems: 'center', gap: 8, height: 44, padding: '0 20px',
@@ -333,7 +424,9 @@ const RegisterPage = () => {
             className="font-inter"
             style={{
               display: 'flex', alignItems: 'center', gap: 8, height: 44, padding: '0 24px',
-              borderRadius: 9, background: submitting ? '#555555' : '#0A0A0A', color: 'white',
+              borderRadius: 9,
+              background: submitting ? '#555555' : '#0A0A0A',
+              color: 'white',
               fontSize: 14, fontWeight: 600, border: 'none',
               cursor: submitting ? 'not-allowed' : 'pointer',
               opacity: submitting ? 0.7 : 1,
