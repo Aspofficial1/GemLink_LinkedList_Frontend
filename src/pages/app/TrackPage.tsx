@@ -232,7 +232,7 @@ const TrackPage: React.FC = () => {
         </button>
       </div>
 
-      {/* Quick select chips */}
+      {/* Quick select chips — full gemId shown, no truncation */}
       <div className="flex gap-2 flex-wrap">
         {loadingGems ? (
           <span className="text-xs text-text-muted">Loading gems...</span>
@@ -252,7 +252,7 @@ const TrackPage: React.FC = () => {
                   : "bg-surface border-border text-text-secondary hover:bg-surface-2"
               }`}
             >
-              {(g.gemId || "").slice(0, 15)}
+              {g.gemId}
             </button>
           ))
         )}
@@ -582,9 +582,9 @@ const TrackPage: React.FC = () => {
                   ))
                 : [
                     { factor: "Missing Certificate", active: false },
-                    { factor: "Origin Verified", active: false },
-                    { factor: "Weight Discrepancy", active: false },
-                    { factor: "Multiple Owners", active: false },
+                    { factor: "Origin Verified",     active: false },
+                    { factor: "Weight Discrepancy",  active: false },
+                    { factor: "Multiple Owners",     active: false },
                   ].map(f => (
                     <div key={f.factor} className="flex items-center justify-between text-[13px]">
                       <div className="flex items-center gap-2">
