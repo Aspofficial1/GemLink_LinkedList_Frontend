@@ -9,6 +9,10 @@ import AlertsPage from "./app/AlertsPage";
 import RegisterPage from "./app/RegisterPage";
 import SettingsPage from "./app/SettingsPage";
 import QRPage from "./app/QRPage";
+import AuditPage from "./app/AuditPage";
+import PriceEstimatorPage from "./app/PriceEstimatorPage";
+import JourneyMapPage from "./app/JourneyMapPage";
+import EditPage from "./app/EditPage";
 
 const pageTitle: Record<string, string> = {
   dashboard: "Dashboard",
@@ -19,6 +23,10 @@ const pageTitle: Record<string, string> = {
   reports:   "Reports",
   qr:        "QR Codes",
   settings:  "Settings",
+  audit:     "Audit Trail",
+  estimate:  "Price Estimator",
+  map:       "Journey Map",
+  edit:      "Edit & Delete",
 };
 
 const AppPages: React.FC<AppLayoutProps> = ({ subPage, setSubPage }) => (
@@ -34,6 +42,10 @@ const AppPages: React.FC<AppLayoutProps> = ({ subPage, setSubPage }) => (
       {subPage === "register"  && <RegisterPage />}
       {subPage === "qr"        && <QRPage />}
       {subPage === "settings"  && <SettingsPage />}
+      {subPage === "audit"     && <AuditPage />}
+      {subPage === "estimate"  && <PriceEstimatorPage />}
+      {subPage === "map"       && <JourneyMapPage />}
+      {subPage === "edit"      && <EditPage />}
     </div>
   </div>
 );
